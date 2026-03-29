@@ -1,38 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Site</title>
-  <style>
-    body {
-      font-size: 60px; /* ←これで全体デカくなる */
-      text-align: center; /* 真ん中にする（おまけ） */
-    }
-  </style>
+  <title>チャット</title>
 </head>
 <body>
-  <h1>ようこそ！</h1>
-  <p>これが自分のサイトです！</p>
-  <input type="text" placeholder="入力してね" style="
-  font-size:60px;
-  padding:30px;
-  border-radius:30px;
-">
-  <div id="chat" style="border:1px solid black; height:200px; overflow:auto; padding:10px;"></div>
+
+<h1>チャット</h1>
+
+<div id="chat" style="
+  border:1px solid black;
+  height:300px;
+  overflow:auto;
+  padding:10px;
+"></div>
 
 <input type="text" id="msg" placeholder="メッセージ入力">
 <button onclick="send()">送信</button>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyClWhZL717EP_kpsBM30exWElbMRAN0-fk",
+  authDomain: "test-59d30.firebaseapp.com",
+  databaseURL: "ここにdatabaseURL入れる",
+  projectId: "test-59d30",
+  storageBucket: "test-59d30.firebasestorage.app",
+  messagingSenderId: "624393225042",
+  appId: "1:624393225042:web:2f03bb5f570dc9be27b08b",
+  measurementId: "G-GN0SVEXH47"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 function send() {
   var text = document.getElementById("msg").value;
-  if(text == "") return;
+  if (text == "") return;
 
-  var chat = document.getElementById("chat");
-  chat.innerHTML += "<div>自分: " + text + "</div>";
-
+  db.ref("chat").push(text);
   document.getElementById("msg").value = "";
-  chat.scrollTop = chat.scrollHeight;
 }
+
+db.ref("chat").on("child_added", function(data) {
+  document.getElementById("chat").innerHTML += "<div>" + data.val() + "</div>";
+});
 </script>
+
 </body>
 </html>
